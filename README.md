@@ -8,35 +8,30 @@
 - Organize Your Code into modules & (or packages)
 - Use git & Github to track changes in your code.
 
-## Example Project :  An online Grocery Store :
+## My Project :  A personal budget tracker :
 
-#### Overview : An online store that sells fruits to customers. This online store has 2 main users. The customer and the manager of the store . Each one of them should be able to do the following tasks for the store to function properly . 
+#### Overview : An interactive Command line budget tracker programm that lets you set your budget, income, expenses and view the summary and forecast of every month for you to evaluate your budget
 
-### Features & User Stories
-#### As a customer I should be able to do the following :
-- Browse  Products . 
-- View the product info (summary, specs, price, quantity , etc.)
-- Search for Products.
-- Get recommendations for my next purchase based on my purchase history.
-- Add Products to the shopping cart .
-- Remove a product from the shopping cart.
-- List the products in my shopping cart. 
-- Continue to checkout . 
-- Fill in my address for delivery.
-- Get receipt of my purchases.
-- Check delivery status . 
+### Features
+#### As a user I should be able to do the following :
+- add monthly income/any source of income . 
+- View the current budget, its expenses and its income
+- add expenses and be able to filter them via category (daily expense, bills, transport, etc)
+- Get forecast for this month expenses and the next.
+- have a grochery list for some expenses.
+- add and remove product from grochery lists.
 
+###  User Stories
+#### a users regular usage of the programm should be like so:
+1 load previous budget data or create new one
+2 view budget, its constraints, expenses and income
+3 take notes on budget and expenses
+4 view the forecast of spending
+5 add expenses or income to budget
+6 save data to be loaded again
 
 
 #### Usage :
- Explain to the user how to use your project . 
- for example:
- - type in search product_name to search for a product.
- - type in list_products to show all the products in the grocery.
- - type in show product_name to get information about this product.
- - type in buy product_name to buy the product . 
- - and so on...
-
 
 ### For your project. Edit this README.md file to include your own project name,  overview, user stories, and usage. 
 
