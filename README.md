@@ -1,13 +1,6 @@
 # UNIT-PROJECT-1
 
 
-## Based on what you’ve learned until now , create a project of your choosing (impress us with your imagination) . This project must at least satisfy the following minimum requirements :
-
-- Must be interactive on CLI.
-- Use your coding skills in Python accurately.
-- Organize Your Code into modules & (or packages)
-- Use git & Github to track changes in your code.
-
 ## My Project :  A personal budget tracker :
 
 #### Overview : An interactive Command line budget tracker programm that lets you set your budget, income, expenses and view the summary and forecast of every month for you to evaluate your budget
@@ -32,8 +25,20 @@
 
 
 #### Usage :
+##### to use this project do the following
+```
+ 1. Create a virtual environment
+python -m venv venv
 
-### For your project. Edit this README.md file to include your own project name,  overview, user stories, and usage. 
+# 2. Activate it
+source venv/bin/activate        # Linux/macOS
+# venv\Scripts\activate         # Windows
 
-### NOTE: before submitting the final project, please do the following command:
-`pip freeze > requirements.txt` to enable use to know & use the packages used in your project.
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Run
+python main.py
+```
+- the project uses the colerama and art libraries so make sure they are included when you run the project
+
