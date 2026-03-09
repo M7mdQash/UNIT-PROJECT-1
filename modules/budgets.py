@@ -1,4 +1,6 @@
 import datetime
+from modules import display
+
 class Budgets():
     def __init__(self, month: int, year: int):
         
@@ -22,16 +24,13 @@ class Budgets():
         return self.year
 
     def get_income_list(self):
-        for entry in self.income_list:
-            print(entry)
+        display.display_list(self.income_list, "Income")
 
     def get_expense_list(self):
-        for entry in self.expense_list:
-            print(entry)
+        display.display_list(self.expense_list, "Expenses")
 
     def get_grocery_list(self):
-        for entry in self.grocery_list:
-            print(entry)
+        display.display_list(self.grocery_list, "Purchases")
 
 
 

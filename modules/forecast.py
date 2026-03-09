@@ -1,4 +1,45 @@
 import datetime
+"""
+Budget Forecast Report Module
+
+This module generates a comprehensive financial forecast report based on a list of budget objects.
+It analyzes income, expenses, and planned purchases across multiple budget periods and displays
+a detailed breakdown with trend analysis.
+
+Key Features:
+    - Displays income entries (dated and one-time)
+    - Displays expense entries (dated and one-time)
+    - Shows planned grocery/purchase list items
+    - Calculates monthly balances
+    - Provides trend analysis comparing periods
+    - Color-coded output for better readability (using colorama)
+    - Validates date ranges across budgets with warnings
+
+Functions:
+    run(budgets_list): Main function that generates and prints the forecast report
+
+Helper Functions:
+    _budget_date(budget): Extracts date from a budget object
+    _check_date_range(budgets_list): Validates that budgets span within 3 years
+    _dated(entries): Filters entries with assigned dates
+    _undated(entries): Filters entries without assigned dates
+    _total(entries, key): Sums a specific key value from entries
+    _print_income_entries(entries, label): Prints formatted income entries
+    _print_expense_entries(entries, label): Prints formatted expense entries
+
+Constants:
+    DIVIDER: Visual separator for major sections (50 chars)
+    SECTION: Visual separator for subsections (40 chars)
+    MAX_GAP_DAYS: Maximum allowed date range between budgets (3 years in days)
+
+Output Format:
+    - Budget details organized by month/year
+    - Income section with regular and one-time sources
+    - Expense section with regular and one-time costs
+    - Grocery list with estimated costs
+    - Monthly balance (green if positive, red if negative)
+    - Trend summary showing balance changes across periods
+"""
 import calendar
 from colorama import Fore, Style
 

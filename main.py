@@ -74,149 +74,163 @@ def pick_budget():
 def main():
     display.appGreeting()
 
-    if storage.data_exists():
-        currBudget = pick_budget()
-    else:
-        print("No budgets found. Let's create a new one.")
-        currBudget = create_new_budget()
-
-    if currBudget is None:
-        print("Goodbye.")
-        return
-
-    expenses.sync_categories_from_budget(currBudget)
-
     while True:
-        display.setGreen()
-        print("\n--- MENU ---")
-        print("1. Summary")
-        print("2. Manage income")
-        print("3. Manage expenses")
-        print("4. Purchases list (groceries)")
-        print("5. Forecast")
-        print("6. Save and exit")
+        if storage.data_exists():
+            currBudget = pick_budget()
+        else:
+            print("No budgets found. Let's create a new one.")
+            currBudget = create_new_budget()
 
-        choice = input("Choose an option: ").strip()
+        if currBudget is None:
+            print("Goodbye.")
+            return
 
-        match choice:
-            case "1":
-                display.display_budget(currBudget)
+        expenses.sync_categories_from_budget(currBudget)
 
-            case "2":
-                while True:
-                    print("\n--- INCOME ---")
-                    print("1. View income")
-                    print("2. Add income")
-                    print("3. Remove income")
-                    print("4. Back")
-                    sub = input("Choose an option: ").strip()
-                    if sub == "1":
-                        currBudget.get_income_list()
-                    elif sub == "2":
-                        income.prompt_income(currBudget)
-                    elif sub == "3":
-                        source = input("Source to remove: ").strip()
-                        try:
-                            currBudget.remove_income(source)
-                            print("Income removed.")
-                        except Exception as e:
-                            print(f"Error removing income: {e}")
-                    elif sub == "4":
-                        break
-                    else:
-                        print("Invalid option.")
+        while True:
+            display.setGreen()
+            print("\n--- MENU ---")
+            print("1. Summary")
+            print("2. Manage income")
+            print("3. Manage expenses")
+            print("4. Purchases list (groceries)")
+            print("5. Forecast")
+            print("6. Switch budget")
+            print("7. Save and exit")
 
-            case "3":
-                while True:
-                    print("\n--- EXPENSES ---")
-                    print("1. View expenses")
-                    print("2. Add expense")
-                    print("3. Remove expense")
-                    print("4. View categories")
-                    print("5. Add category")
-                    print("6. Back")
-                    sub = input("Choose an option: ").strip()
-                    if sub == "1":
-                        currBudget.get_expense_list()
-                    elif sub == "2":
-                        name = input("Expense name: ").strip()
-                        try:
-                            amount = float(input("Amount: ").strip())
-                        except ValueError:
-                            print("Invalid amount.")
-                            continue
-                        category = input("Category: ").strip()
-                        day_input = input("Day (1-28, leave blank for no date): ").strip()
-                        day = int(day_input) if day_input else None
-                        currBudget.add_expense(name, amount, category, day)
-                        print("Expense added.")
-                    elif sub == "3":
-                        name = input("Expense name to remove: ").strip()
-                        try:
-                            currBudget.remove_expense(name)
-                            print("Expense removed.")
-                        except Exception as e:
-                            print(f"Error removing expense: {e}")
-                    elif sub == "4":
-                        print("Categories:", expenses.get_categories())
-                    elif sub == "5":
-                        new_cat = input("New category name: ").strip()
-                        expenses.add_category(new_cat)
-                    elif sub == "6":
-                        break
-                    else:
-                        print("Invalid option.")
+            choice = input("Choose an option: ").strip()
 
-            case "4":
-                while True:
-                    print("\n--- PURCHASES ---")
-                    print("1. View purchases list")
-                    print("2. Add item")
-                    print("3. Remove item")
-                    print("4. Apply all to budget")
-                    print("5. Back")
-                    sub = input("Choose an option: ").strip()
-                    if sub == "1":
-                        currBudget.get_grocery_list()
-                    elif sub == "2":
-                        item_name = input("Item name: ").strip()
-                        try:
-                            cost = float(input("Estimated cost: ").strip())
-                        except ValueError:
-                            print("Invalid cost.")
-                            continue
-                        currBudget.add_grocery_item(item_name, cost)
-                        print("Item added.")
-                    elif sub == "3":
-                        item_name = input("Item name to remove: ").strip()
-                        try:
-                            currBudget.remove_grochery_item(item_name)
-                            print("Item removed.")
-                        except Exception as e:
-                            print(f"Error removing item: {e}")
-                    elif sub == "4":
-                        grocheries.applyAllGrocheriesToBudget(currBudget)
-                        grocheries.resetGroceryList(currBudget)
-                        print("All items applied to budget and purchases list cleared.")
-                    elif sub == "5":
-                        break
-                    else:
-                        print("Invalid option.")
+            match choice:
+                case "1":
+                    display.display_budget(currBudget)
 
-            case "5":
-                all_keys = storage.list_budgets()
-                all_budgets = [budgets.Budgets.from_dict(storage.load(k)) for k in all_keys]
-                if currBudget not in all_budgets:
-                    all_budgets.append(currBudget)
-                forecast.run(all_budgets)
+                case "2":
+                    while True:
+                        print("\n--- INCOME ---")
+                        print("1. View income")
+                        print("2. Add income")
+                        print("3. Remove income")
+                        print("4. Import dated income from another budget")
+                        print("5. Back")
+                        sub = input("Choose an option: ").strip()
+                        if sub == "1":
+                            currBudget.get_income_list()
+                        elif sub == "2":
+                            income.prompt_income(currBudget)
+                        elif sub == "3":
+                            source = input("Source to remove: ").strip()
+                            try:
+                                currBudget.remove_income(source)
+                                print("Income removed.")
+                            except Exception as e:
+                                print(f"Error removing income: {e}")
+                        elif sub == "4":
+                            income.prompt_import_income(currBudget)
+                        elif sub == "5":
+                            break
+                        else:
+                            print("Invalid option.")
 
-            case "6":
-                storage.save(currBudget.to_dict())
-                print("Budget saved! Goodbye.")
-                break
+                case "3":
+                    while True:
+                        print("\n--- EXPENSES ---")
+                        print("1. View expenses")
+                        print("2. Add expense")
+                        print("3. Remove expense")
+                        print("4. View categories")
+                        print("5. Add category")
+                        print("6. Import dated expenses from another budget")
+                        print("7. Back")
+                        sub = input("Choose an option: ").strip()
+                        if sub == "1":
+                            currBudget.get_expense_list()
+                        elif sub == "2":
+                            name = input("Expense name: ").strip()
+                            try:
+                                amount = float(input("Amount: ").strip())
+                            except ValueError:
+                                print("Invalid amount.")
+                                continue
+                            category = input("Category: ").strip()
+                            day_input = input("Day (1-28, leave blank for no date): ").strip()
+                            day = int(day_input) if day_input else None
+                            currBudget.add_expense(name, amount, category, day)
+                            print("Expense added.")
+                        elif sub == "3":
+                            name = input("Expense name to remove: ").strip()
+                            try:
+                                currBudget.remove_expense(name)
+                                print("Expense removed.")
+                            except Exception as e:
+                                print(f"Error removing expense: {e}")
+                        elif sub == "4":
+                            print("Categories:", expenses.get_categories())
+                        elif sub == "5":
+                            new_cat = input("New category name: ").strip()
+                            expenses.add_category(new_cat)
+                        elif sub == "6":
+                            expenses.prompt_import_expenses(currBudget)
+                        elif sub == "7":
+                            break
+                        else:
+                            print("Invalid option.")
 
-            case _:
-                print("Invalid option, please try again.")
+                case "4":
+                    while True:
+                        print("\n--- PURCHASES ---")
+                        print("1. View purchases list")
+                        print("2. Add item")
+                        print("3. Remove item")
+                        print("4. Apply all to budget")
+                        print("5. Back")
+                        sub = input("Choose an option: ").strip()
+                        if sub == "1":
+                            currBudget.get_grocery_list()
+                        elif sub == "2":
+                            item_name = input("Item name: ").strip()
+                            try:
+                                cost = float(input("Estimated cost: ").strip())
+                            except ValueError:
+                                print("Invalid cost.")
+                                continue
+                            currBudget.add_grocery_item(item_name, cost)
+                            print("Item added.")
+                        elif sub == "3":
+                            item_name = input("Item name to remove: ").strip()
+                            try:
+                                currBudget.remove_grochery_item(item_name)
+                                print("Item removed.")
+                            except Exception as e:
+                                print(f"Error removing item: {e}")
+                        elif sub == "4":
+                            grocheries.applyAllGrocheriesToBudget(currBudget)
+                            grocheries.resetGroceryList(currBudget)
+                            print("All items applied to budget and purchases list cleared.")
+                        elif sub == "5":
+                            break
+                        else:
+                            print("Invalid option.")
+
+                case "5":
+                    all_keys = storage.list_budgets()
+                    curr_key = f"{currBudget.get_year()}-{currBudget.get_month()}"
+                    all_budgets = [currBudget if k == curr_key else budgets.Budgets.from_dict(storage.load(k)) for k in all_keys]
+                    if curr_key not in all_keys:
+                        all_budgets.append(currBudget)
+                    forecast.run(all_budgets)
+
+                case "6":
+                    storage.save(currBudget.to_dict())
+                    print("Budget saved.")
+                    break
+
+                case "7":
+                    storage.save(currBudget.to_dict())
+                    print("Budget saved! Goodbye.")
+                    return
+
+                case _:
+                    print("Invalid option, please try again.")
 
 if __name__ == "__main__":
     main()

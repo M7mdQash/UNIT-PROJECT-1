@@ -1,3 +1,25 @@
+def prompt_import_income(budget):
+    from modules import storage
+    curr_key = f"{budget.get_year()}-{budget.get_month()}"
+    options = [k for k in storage.list_budgets() if k != curr_key]
+    if not options:
+        print("No other budgets available to import from.")
+        return
+    print("\nSelect budget to import income from:")
+    for i, key in enumerate(options, 1):
+        print(f"  {i}. {key}")
+    choice = input("Choose an option: ").strip()
+    try:
+        idx = int(choice) - 1
+        if not (0 <= idx < len(options)):
+            print("Invalid option.")
+            return
+    except ValueError:
+        print("Invalid input.")
+        return
+    count = storage.import_dated_income(options[idx], budget)
+    print(f"Imported {count} dated income entries from {options[idx]}.")
+
 def prompt_income(budget):
     source = input("Enter income source: ").strip()
     if not source:

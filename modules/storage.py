@@ -1,5 +1,6 @@
 import json
 import os
+import datetime
 
 DATA_FILE = "data/budget_data.json"
 
@@ -36,3 +37,23 @@ def delete(key):
 
 def data_exists():
     return os.path.exists(DATA_FILE) and bool(_load_all())
+
+def import_dated_income(source_key, target_budget):
+    data = load(source_key)
+    imported = 0
+    for entry in data.get("income_list", []):
+        if entry.get("date"):
+            date_obj = datetime.date(*[int(p) for p in entry["date"].split("-")])
+            target_budget.income_list.append({**entry, "date": date_obj})
+            imported += 1
+    return imported
+
+def import_dated_expenses(source_key, target_budget):
+    data = load(source_key)
+    imported = 0
+    for entry in data.get("expense_list", []):
+        if entry.get("date"):
+            date_obj = datetime.date(*[int(p) for p in entry["date"].split("-")])
+            target_budget.expense_list.append({**entry, "date": date_obj})
+            imported += 1
+    return imported

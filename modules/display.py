@@ -11,6 +11,21 @@ def appGreeting():
 def setGreen():
     print(Fore.GREEN)
 
+def display_list(entries, title):
+    print(Fore.CYAN + f"\n--- {title} ---" + Style.RESET_ALL)
+    if not entries:
+        print("  (empty)")
+        return
+    for entry in entries:
+        if "source" in entry:
+            date_str = str(entry["date"]) if entry["date"] else "no date"
+            print(f"  [{date_str}] {entry['source']}: ${entry['amount']:.2f}")
+        elif "name" in entry:
+            date_str = str(entry["date"]) if entry["date"] else "no date"
+            print(f"  [{date_str}] {entry['name']} ({entry['category']}): ${entry['amount']:.2f}")
+        elif "item-name" in entry:
+            print(f"  {entry['item-name']}: ${entry['estimated-cost']:.2f}")
+
 def display_budget(budget):
     month_name = budget.get_month()
     year = budget.get_year()
