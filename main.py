@@ -8,6 +8,7 @@ from modules import grocheries
 from modules import storage
 from modules import expenses
 from modules import income
+from modules import forecast
 import datetime
 
 
@@ -21,30 +22,54 @@ def create_new_budget():
     return budgets.Budgets(month, year)
 
 def pick_budget():
-    saved = storage.list_budgets()
-    
-    print("\nSaved budgets:")
-    for i, key in enumerate(saved, 1):
-        print(f"  {i}. {key}")
-    print(f"  {len(saved) + 1}. Create new budget")
+    while True:
+        saved = storage.list_budgets()
+        n = len(saved)
 
-    choice = input("Choose an option: ").strip()
-    try:
-        idx = int(choice) - 1
-    except ValueError:
-        print("Invalid input.")
-        return None
+        print("\nSaved budgets:")
+        for i, key in enumerate(saved, 1):
+            print(f"  {i}. {key}")
+        print(f"  {n + 1}. Create new budget")
+        print(f"  {n + 2}. Delete a budget")
+        print(f"  {n + 3}. Exit")
 
-    if idx == len(saved):
-        return create_new_budget()
-    elif 0 <= idx < len(saved):
-        data = storage.load(saved[idx])
-        budget = budgets.Budgets.from_dict(data)
-        print(f"Loaded budget for {budget.get_month()}/{budget.get_year()}")
-        return budget
-    else:
-        print("Invalid option.")
-        return None
+        choice = input("Choose an option: ").strip()
+        try:
+            idx = int(choice) - 1
+        except ValueError:
+            print("Invalid input.")
+            continue
+
+        if 0 <= idx < n:
+            data = storage.load(saved[idx])
+            budget = budgets.Budgets.from_dict(data)
+            print(f"Loaded budget for {budget.get_month()}/{budget.get_year()}")
+            return budget
+        elif idx == n:
+            budget = create_new_budget()
+            if budget is not None:
+                return budget
+        elif idx == n + 1:
+            if not saved:
+                print("No budgets to delete.")
+                continue
+            print("\nDelete which budget?")
+            for i, key in enumerate(saved, 1):
+                print(f"  {i}. {key}")
+            del_choice = input("Choose an option: ").strip()
+            try:
+                del_idx = int(del_choice) - 1
+                if 0 <= del_idx < n:
+                    storage.delete(saved[del_idx])
+                    print(f"Deleted budget: {saved[del_idx]}")
+                else:
+                    print("Invalid option.")
+            except ValueError:
+                print("Invalid input.")
+        elif idx == n + 2:
+            return None
+        else:
+            print("Invalid option.")
 
 def main():
     display.appGreeting()
@@ -56,7 +81,7 @@ def main():
         currBudget = create_new_budget()
 
     if currBudget is None:
-        print("No budget selected. Exiting.")
+        print("Goodbye.")
         return
 
     expenses.sync_categories_from_budget(currBudget)
@@ -68,7 +93,8 @@ def main():
         print("2. Manage income")
         print("3. Manage expenses")
         print("4. Purchases list (groceries)")
-        print("5. Save and exit")
+        print("5. Forecast")
+        print("6. Save and exit")
 
         choice = input("Choose an option: ").strip()
 
@@ -178,6 +204,13 @@ def main():
                         print("Invalid option.")
 
             case "5":
+                all_keys = storage.list_budgets()
+                all_budgets = [budgets.Budgets.from_dict(storage.load(k)) for k in all_keys]
+                if currBudget not in all_budgets:
+                    all_budgets.append(currBudget)
+                forecast.run(all_budgets)
+
+            case "6":
                 storage.save(currBudget.to_dict())
                 print("Budget saved! Goodbye.")
                 break

@@ -26,5 +26,13 @@ def save(budget_dict):
 def load(key):
     return _load_all()[key]
 
+def delete(key):
+    all_data = _load_all()
+    if key in all_data:
+        del all_data[key]
+        _save_all(all_data)
+        return True
+    return False
+
 def data_exists():
     return os.path.exists(DATA_FILE) and bool(_load_all())
