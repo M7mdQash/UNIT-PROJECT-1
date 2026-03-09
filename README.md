@@ -42,3 +42,10 @@ python main.py
 ```
 - the project uses the colerama and art libraries so make sure they are included when you run the project
 
+### user instructions: 
+budgets uses a json file to store user info, playing with this file may alter the way the programm functions
+
+after each session remember to save and exit as leaving without saving will not save the data onto the json
+
+
+
