@@ -95,8 +95,9 @@ def main():
             print("3. Manage expenses")
             print("4. Purchases list (groceries)")
             print("5. Forecast")
-            print("6. Switch budget")
-            print("7. Save and exit")
+            print("6. Set savings target")
+            print("7. Switch budget")
+            print("8. Save and exit")
 
             choice = input("Choose an option: ").strip()
 
@@ -220,11 +221,26 @@ def main():
                     forecast.run(all_budgets)
 
                 case "6":
+                    try:
+                        target = float(input("Enter savings target amount: $").strip())
+                        if target <= 0:
+                            raise ValueError
+                    except ValueError:
+                        print("Invalid amount.")
+                        continue
+                    all_keys = storage.list_budgets()
+                    curr_key = f"{currBudget.get_year()}-{currBudget.get_month()}"
+                    all_budgets = [currBudget if k == curr_key else budgets.Budgets.from_dict(storage.load(k)) for k in all_keys]
+                    if curr_key not in all_keys:
+                        all_budgets.append(currBudget)
+                    forecast.savings_target(all_budgets, target)
+
+                case "7":
                     storage.save(currBudget.to_dict())
                     print("Budget saved.")
                     break
 
-                case "7":
+                case "8":
                     storage.save(currBudget.to_dict())
                     print("Budget saved! Goodbye.")
                     return

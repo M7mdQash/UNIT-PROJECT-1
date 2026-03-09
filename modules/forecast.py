@@ -183,3 +183,33 @@ def run(budgets_list):
         print(overall_color + f"\n  Overall change across all periods: {sign}${overall:.2f}" + Style.RESET_ALL)
 
     print(Fore.CYAN + f"\n{DIVIDER}\n" + Style.RESET_ALL)
+
+
+def savings_target(budgets_list, target):
+    if not budgets_list:
+        print("No budget data to base the estimate on.")
+        return
+
+    balances = [b.balance() for b in budgets_list]
+    avg = sum(balances) / len(balances)
+
+    print(Fore.CYAN + f"\n{DIVIDER}")
+    print("  SAVINGS TARGET")
+    print(f"{DIVIDER}" + Style.RESET_ALL)
+    print(f"  Target:                  ${target:.2f}")
+    print(f"  Avg monthly savings:     ${avg:.2f}  (based on {len(balances)} budget(s))")
+
+    if avg <= 0:
+        print(Fore.RED + "\n  Your average monthly balance is zero or negative." )
+        print("  At this rate you will not reach your target." + Style.RESET_ALL)
+    else:
+        months = target / avg
+        years = int(months // 12)
+        rem = months % 12
+        time_str = ""
+        if years:
+            time_str += f"{years} year(s) "
+        time_str += f"{rem:.1f} month(s)"
+        print(Fore.GREEN + f"\n  Estimated time to reach target: {time_str}" + Style.RESET_ALL)
+
+    print(Fore.CYAN + f"{DIVIDER}\n" + Style.RESET_ALL)
