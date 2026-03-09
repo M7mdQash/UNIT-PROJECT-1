@@ -12,7 +12,11 @@ def applyGrocheriesToBudget(budget, itemName:str):
             print("error with adding grocheries", e)
             
 def applyAllGrocheriesToBudget(budget):
-    #this one does it loop like for all the grocheries
-    list = budget.grocery_list
-    for items in list:
-        pass
+    total = sum(item["estimated-cost"] for item in budget.grocery_list)
+    try:
+        budget.add_expense("monthly purchases", total, "grocheries" )
+    except Exception as e:
+        print("error with adding grocheries", e)
+
+def resetGroceryList(budget):
+    budget.grocery_list = []

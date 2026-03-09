@@ -35,17 +35,33 @@ class Budgets():
 
 
 
-    def add_income(self, source, amount,date:datetime.date):
+    def add_income(self, source, amount, day: int = None):
         '''
-        for the date object remember that income is depending on the day that income arrives 
+        for the date object remember that income is depending on the day that income arrives
         '''
+        if day is None:
+            date = None
+        else:
+            try:
+                date = datetime.date(int(self.year), int(self.month), int(day))
+            except ValueError as e:
+                print(f"Invalid date: {e}")
+                return
         self.income_list.append({"source":source,"amount":amount,"date":date})
-        
-        
-    def add_expense(self, name, amount, category, date:datetime.date):
+
+
+    def add_expense(self, name, amount, category, day: int = None):
         '''
-        for the date object remember that income is depending on the day that expense arrives 
+        for the date object remember that income is depending on the day that expense arrives
         '''
+        if day is None:
+            date = None
+        else:
+            try:
+                date = datetime.date(int(self.year), int(self.month), int(day))
+            except ValueError as e:
+                print(f"Invalid date: {e}")
+                return
         self.expense_list.append({"name":name,"amount":amount,"category":category, "date":date})
         
     def get_expenses_by_category(self, category):
@@ -54,6 +70,12 @@ class Budgets():
 
 
     
+    def remove_income(self, source):
+        self.income_list = [entry for entry in self.income_list if entry["source"] != source]
+
+    def remove_expense(self, name):
+        self.expense_list = [entry for entry in self.expense_list if entry["name"] != name]
+
     def add_grocery_item(self, name, estimated_cost):
         self.grocery_list.append({"item-name":name,"estimated-cost":estimated_cost})
     def remove_grochery_item(self, name):
@@ -79,16 +101,16 @@ class Budgets():
         return {
             "month": self.month,
             "year": self.year,
-            "income_list": [{**entry, "date": entry["date"].isoformat()} for entry in self.income_list],
-            "expense_list": [{**entry, "date": entry["date"].isoformat()} for entry in self.expense_list],
+            "income_list": [{**entry, "date": f"{entry['date'].year}-{entry['date'].month:02d}-{entry['date'].day:02d}" if entry["date"] else None} for entry in self.income_list],
+            "expense_list": [{**entry, "date": f"{entry['date'].year}-{entry['date'].month:02d}-{entry['date'].day:02d}" if entry["date"] else None} for entry in self.expense_list],
             "grocery_list": self.grocery_list,
         }
         
     @classmethod
     def from_dict(cls, data):
         budget = cls(data["month"], data["year"])
-        budget.income_list = [{**entry, "date": datetime.date.fromisoformat(entry["date"])} for entry in data["income_list"]]
-        budget.expense_list = [{**entry, "date": datetime.date.fromisoformat(entry["date"])} for entry in data["expense_list"]]
+        budget.income_list = [{**entry, "date": datetime.date(*[int(p) for p in entry["date"].split("-")]) if entry["date"] else None} for entry in data["income_list"]]
+        budget.expense_list = [{**entry, "date": datetime.date(*[int(p) for p in entry["date"].split("-")]) if entry["date"] else None} for entry in data["expense_list"]]
         budget.grocery_list = data["grocery_list"]
         return budget
     

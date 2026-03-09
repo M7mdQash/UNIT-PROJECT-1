@@ -32,7 +32,8 @@ def display_budget(budget):
     print(Fore.RED + "\n  Expenses:")
     if budget.expense_list:
         for entry in budget.expense_list:
-            print(f"    [{entry['date']}] {entry['name']} ({entry['category']}): ${entry['amount']:.2f}")
+            date_str = str(entry['date']) if entry['date'] else "no date"
+            print(f"    [{date_str}] {entry['name']} ({entry['category']}): ${entry['amount']:.2f}")
     else:
         print("    No expenses recorded.")
     print(f"  Total Expenses: ${budget.total_expenses():.2f}" + Style.RESET_ALL)
